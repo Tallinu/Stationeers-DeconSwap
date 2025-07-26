@@ -1,6 +1,6 @@
 # Frame & Wall DeconSwap
 
-Swaps the use of the wrench and grinder for deconstructing certain build states of frames and walls. It requires BepInEx (and you probably want StationeersLaunchPad too).
+Swaps the use of the wrench and grinder for deconstructing certain build states of frames and walls. This plugin requires BepInEx to run (and you probably want StationeersLaunchPad too).
 
 ## Why swap?
 
