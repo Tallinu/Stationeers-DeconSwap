@@ -6,9 +6,9 @@ using UnityEngine;
 namespace DeconSwap.Scripts
 {
     [BepInPlugin("net.Tallinu.stationeers.DeconSwap.Scripts", "Frame & Wall DeconSwap", "0.1.0")]   
-    public class FrameDeconSwapPlugin : BaseUnityPlugin
+    public class DeconSwapPlugin : BaseUnityPlugin
     {
-        public static FrameDeconSwapPlugin Instance;
+        public static DeconSwapPlugin Instance;
         private const string header = "[F&WDeconSwap]: ";
 
         public static void Log(string line)
@@ -26,7 +26,7 @@ namespace DeconSwap.Scripts
 
         void Awake()
         {
-            FrameDeconSwapPlugin.Instance = this;
+            DeconSwapPlugin.Instance = this;
             try
             {
                 // Harmony.DEBUG = true;

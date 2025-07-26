@@ -23,13 +23,13 @@ namespace DeconSwap.Scripts
             grinder = (Item)(WorldManager.Instance.SourcePrefabs.Find(x => x.PrefabName.Equals("ItemAngleGrinder")));
             if (wrench == null || grinder == null)
             {
-                FrameDeconSwapPlugin.LogError("Failed to find needed tools. Wrench: " + (wrench != null ? wrench.PrefabName : "NULL")
+                DeconSwapPlugin.LogError("Failed to find needed tools. Wrench: " + (wrench != null ? wrench.PrefabName : "NULL")
                     + " Grinder: " + (grinder != null ? grinder.PrefabName : "NULL"));
                 wrench = null;
                 grinder = null;
                 return;
             }
-            FrameDeconSwapPlugin.Log("Found tools. Wrench: " + wrench.PrefabName + " Grinder: " + grinder.PrefabName);
+            DeconSwapPlugin.Log("Found tools. Wrench: " + wrench.PrefabName + " Grinder: " + grinder.PrefabName);
 
             //Search prefabs list for structures to modify
             foreach (Thing thing in WorldManager.Instance.SourcePrefabs)
@@ -37,9 +37,14 @@ namespace DeconSwap.Scripts
                 if (thing is Frame frame && thing.PrefabName.StartsWith("StructureFrame"))
                 {
                     //Frames handled here.
-                    int count = frame.BuildStates.Count;
-                    FrameDeconSwapPlugin.Log("Found Frame " + frame.PrefabName + " with " + frame.BuildStates.Count + " build state" + (count != 1 ? "s." : "."));
+                    DeconSwapPlugin.Log("Found frame " + frame.PrefabName + " with " + frame.BuildStates.Count + " build state" + (frame.BuildStates.Count != 1 ? "s." : "."));
                     SwapTool(frame.BuildStates);
+                    if (frame.BuildStates.Count > 2)
+                    {
+                        float newtime = frame.BuildStates[2].Tool.ExitTime * 1.5f;
+                        DeconSwapPlugin.Log("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
+                        frame.BuildStates[2].Tool.ExitTime = newtime;
+                    }
                 }
                 else if ((thing is Wall || thing is WallPillar)
                       && (thing.PrefabName.StartsWith("StructureWall")
@@ -50,16 +55,14 @@ namespace DeconSwap.Scripts
                     {
                         //Normal walls of all kinds, and 2 of 3 window shutter pieces get handled here.
                         //Floor gratings also meet the search criteria, but remain unaltered since they're dismantled with a crowbar.
-                        int count = wall.BuildStates.Count;
-                        FrameDeconSwapPlugin.Log("Found wall " + wall.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
+                        DeconSwapPlugin.Log("Found wall " + wall.PrefabName + " with " + wall.BuildStates.Count + " build state" + (wall.BuildStates.Count != 1 ? "s." : "."));
                         SwapTool(wall.BuildStates);
                     }
-                    else if (thing is WallPillar wallpillar)
+                    else if (thing is WallPillar wallp)
                     {
                         //These don't count as a Wall class and have to be handled separately
-                        int count = wallpillar.BuildStates.Count;
-                        FrameDeconSwapPlugin.Log("Found wall pillar " + wallpillar.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
-                        SwapTool(wallpillar.BuildStates);
+                        DeconSwapPlugin.Log("Found wall pillar " + wallp.PrefabName + " with " + wallp.BuildStates.Count + " build state" + (wallp.BuildStates.Count != 1 ? "s." : "."));
+                        SwapTool(wallp.BuildStates);
                     }
                 }
                 else if (thing is WindowShutterController wsc)
@@ -67,15 +70,15 @@ namespace DeconSwap.Scripts
                     //Special casing this because internally it's not a Wall, but window shutter parts are all made from the same kit,
                     //and all of their Build State 0's are normally dismantled with the same tool (grinder) just like plain walls are.
                     int count = wsc.BuildStates.Count;
-                    FrameDeconSwapPlugin.Log("Found wall " + wsc.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
+                    DeconSwapPlugin.Log("Found wall " + wsc.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
                     SwapTool(wsc.BuildStates);
                 }
             }
 
             if (changeCount > 0)
-                FrameDeconSwapPlugin.Log("Modified " + changeCount + " build states.");
+                DeconSwapPlugin.Log("Modified " + changeCount + " build states.");
             else
-                FrameDeconSwapPlugin.LogWarning("Unexpected: No build states were modified!");
+                DeconSwapPlugin.LogWarning("Unexpected: No build states were modified!");
             wrench = null;
             grinder = null;
         }
@@ -87,13 +90,13 @@ namespace DeconSwap.Scripts
             {
                 if (ReferenceEquals(states[i].Tool.ToolExit, wrench))
                 {
-                    FrameDeconSwapPlugin.Log("  Swapping build state " + i + " dismantle tool from wrench to grinder.");
+                    DeconSwapPlugin.Log("  Swapping build state " + i + " dismantle tool from wrench to grinder.");
                     states[i].Tool.ToolExit = grinder;
                     changeCount++;
                 }
                 else if (ReferenceEquals(states[i].Tool.ToolExit, grinder))
                 {
-                    FrameDeconSwapPlugin.Log("  Swapping build state " + i + " dismantle tool from grinder to wrench.");
+                    DeconSwapPlugin.Log("  Swapping build state " + i + " dismantle tool from grinder to wrench.");
                     states[i].Tool.ToolExit = wrench;
                     changeCount++;
                 }
