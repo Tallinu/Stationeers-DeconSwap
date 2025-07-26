@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>FrameDeconSwap.Scripts</RootNamespace>
+    <RootNamespace>DeconSwap.Scripts</RootNamespace>
     <GameDir>H:\Games\SteamLibrary\steamapps\common\Stationeers</GameDir>
   </PropertyGroup>
 

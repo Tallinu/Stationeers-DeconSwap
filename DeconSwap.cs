@@ -26,7 +26,7 @@ namespace DeconSwap.Scripts
 
         void Awake()
         {
-            DeconSwapPlugin.Instance = this;
+            Instance = this;
             try
             {
                 // Harmony.DEBUG = true;
