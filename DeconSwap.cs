@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace DeconSwap.Scripts
 {
-    [BepInPlugin("net.Tallinu.stationeers.DeconSwap.Scripts", "Frame & Wall DeconSwap", "0.1.0")]   
+    [BepInPlugin("net.Tallinu.stationeers.DeconSwap.Scripts", "Frame & Wall DeconSwap", "1.1.0")]
     public class DeconSwapPlugin : BaseUnityPlugin
     {
         public static DeconSwapPlugin Instance;
