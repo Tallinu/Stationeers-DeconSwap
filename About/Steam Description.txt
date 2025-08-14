@@ -1,12 +1,11 @@
-# Frame & Wall DeconSwap
-
 Swaps the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
 
-Requires **BepInEx** and **StationeersLaunchPad**, see below.
+Requires [b]BepInEx[/b] and [b]StationeersLaunchPad[/b], see below.
 
 The changes made by this mod are not retained in your save games, so you can freely try it and remove it.
 
-## Why swap?
+[hr][/hr]
+[h2]Why bother? Why these tools?[/h2]
 
 "Unwelding" a sealed frame with a wrench (A) makes no sense and (B) is way too easy to do accidentally while working on your plumbing, causing dangerous hull breaches! (You've never had that happen, or nearly happen? Play long enough, and it will.)
 
@@ -18,9 +17,10 @@ In terms of game balance, you'll use more grinder charge for dismantling fully w
 
 With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long, and changing your mind about where you set down those last hundred walls or frames won't send you scrambling for batteries.
 
-## Installing the mod loader
+[hr][/hr]
+[h2]Installing the mod loader[/h2]
 
-If you haven't done so already, you'll need to install StationeersLaunchPad and BepInEx in order for plugin mods like this one to work. (If you had previously installed the StationeersMods mod loader, you'll need to remove that also.)
+If you haven't done so already, you'll need to install StationeersLaunchPad and BepInEx in order for plugin mods like this one to work.
 
 Start by going to the home of StationeersLaunchPad:
 https://github.com/StationeersLaunchPad/StationeersLaunchPad
