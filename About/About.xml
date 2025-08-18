@@ -2,17 +2,17 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Frame &amp; Wall DeconSwap</Name>
   <Author>Tallinu</Author>
-  <Version>1.1</Version>
+  <Version>1.2</Version>
   <Description>Frame &amp; Wall DeconSwap
-Reduce the chance of hull breaches by swapping the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
+Reduce the chance of hull breaches by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
 Requires BepInEx and StationeersLaunchPad.
 The changes made by this mod are not retained in your save games, so you can freely try it and remove it.
 Why bother? Why these tools?
-"Unwelding" a sealed frame with a wrench (A) makes no sense and (B) is way too easy to do accidentally while working on your plumbing, causing dangerous hull breaches! (You've never had that happen, or nearly happen? Play long enough, and it will.)
-Meanwhile, the initial placement of frames and walls (which you do with your bare hands) requires a grinder and battery charge to undo, even though most other construction tasks that are undone by a grinder are typically welding operations.
-This mod brings more safety and consistency to the situation by editing the relevant build states of frames and walls, swapping the use of wrench and grinder around so that frame welding steps are undone with the grinder, and the initial placement stage of frames and walls is picked up easily with the wrench. The time required to grind open the final, airtight stage of a frame is also slightly increased to help prevent accidents.
-In terms of game balance, you'll use more grinder charge for dismantling fully welded frames, but won't need it for walls. Seems close enough to me, and well worth the benefits.
-With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long, and changing your mind about where you set down those last hundred walls or frames won't send you scrambling for batteries.
+"Unwelding" a sealed frame with a wrench is way too easy to do accidentally while working on your plumbing, causing dangerous hull breaches! (You've never had that happen, or nearly happen? Play long enough, and it will.) Not to mention it makes no sense.
+Meanwhile, the initial placement of frames, walls, and landing pads (which you do with your bare hands) requires a grinder and battery charge to undo, even though most other construction tasks that are undone by a grinder are typically welding operations.
+This mod brings more safety and consistency to the situation by editing the relevant build states of frames, walls, and landing pads, swapping the use of wrench and grinder around so that frame and pad welding steps are undone with the grinder, and the initial placement stages are picked up easily with the wrench. The time required to grind open the final, airtight stage of a frame is also slightly increased to help prevent accidents.
+In terms of game balance, you'll use more grinder charge for dismantling fully welded frames, but won't need it for walls, and most pad pieces require the same operations, but in reverse order. Seems close enough to me, and well worth the benefits.
+With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long.
 </Description>
   <ChangeLog xsi:nil="true" />
   <WorkshopHandle>3545236535</WorkshopHandle>
