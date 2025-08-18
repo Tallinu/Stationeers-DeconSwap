@@ -4,7 +4,7 @@
   <Author>Tallinu</Author>
   <Version>1.1</Version>
   <Description>Frame &amp; Wall DeconSwap
-Swaps the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
+Reduce the chance of hull breaches by swapping the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
 Requires BepInEx and StationeersLaunchPad.
 The changes made by this mod are not retained in your save games, so you can freely try it and remove it.
 Why bother? Why these tools?

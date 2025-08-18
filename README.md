@@ -1,6 +1,6 @@
 # Frame & Wall DeconSwap
 
-Swaps the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
+Reduce the chance of hull breaches by swapping the use of the wrench and grinder for deconstructing certain build states of frames and walls. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
 
 Requires **BepInEx** and **StationeersLaunchPad**, see below.
 

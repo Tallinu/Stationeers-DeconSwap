@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>DeconSwap.Scripts</RootNamespace>
-    <GameDir>H:\Games\SteamLibrary\steamapps\common\Stationeers</GameDir>
+    <RootNamespace>DeconSwap</RootNamespace>
+    <GameDir>D:\Games\Stationeers pre-Terrain</GameDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,9 @@
     </Reference>
     <Reference Include="BepInEx.Harmony">
       <HintPath>$(GameDir)\BepInEx\core\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="LaunchPadBooster">
+      <HintPath>..\..\Games\Stationeers pre-Terrain\BepInEx\plugins\StationeersLaunchPad\LaunchPadBooster.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(GameDir)\rocketstation_Data\Managed\UnityEngine.dll</HintPath>
@@ -37,7 +40,7 @@
   </ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy /Y /F &quot;$(TargetPath)&quot; &quot;$(GameDir)\BepInEx\plugins&quot;" />
+		<Exec Command="xcopy /Y /F &quot;$(TargetPath)&quot; &quot;C:\Users\Tallinu\Documents\My Games\Stationeers\mods\DeconSwap&quot;" />
 	</Target>
 
   <PropertyGroup>
