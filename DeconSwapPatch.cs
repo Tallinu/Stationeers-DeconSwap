@@ -15,7 +15,6 @@ namespace DeconSwap
         private static Item grinder;
         private static Item drill;
         private static int changeCount = 0;
-        private static bool beta = false;
 
         [HarmonyPatch("LoadAll")]
         [HarmonyPrefix]
@@ -102,7 +101,6 @@ namespace DeconSwap
                     else if (pad.PrefabName.Equals("Landingpad_LargeTank"))
                     {
                         // Landingpad_LargeTank - Grinder (welded steel sheets, good), wrench (tanks), Hand Drill (base) - swap BS 0 and 1 (wrench, drill)
-                        beta = true;
                         SwapTools(pad.BuildStates, 0, drill, wrench);
                         SwapTools(pad.BuildStates, 1, wrench, drill);
                     }
@@ -118,11 +116,10 @@ namespace DeconSwap
                 }
             }
 
-            int expected = (beta ? 89 : 87);
-            if (changeCount == expected)
-                DeconSwapPlugin.Log("Modified " + changeCount + " build states. (This is the expected result for " + (beta ? "Beta" : "Stable") + ".)");
+            if (changeCount == 89)
+                DeconSwapPlugin.Log("Modified " + changeCount + " build states (this is the expected result).");
             else if (changeCount > 0)
-                DeconSwapPlugin.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: " + expected + "). Parts added by other mods may have been affected.");
+                DeconSwapPlugin.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: 89). Parts added by other mods may have been affected.");
             else
                 DeconSwapPlugin.LogError("Unexpected: No build states were modified!");
             wrench = null; // Cleanup references? Does this do any good?
