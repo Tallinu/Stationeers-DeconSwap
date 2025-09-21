@@ -30,9 +30,9 @@ namespace DeconSwap
             }
 
             //Find the tool references used for replacement.
-            wrench = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x.PrefabName.Equals("ItemWrench"));
-            grinder = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x.PrefabName.Equals("ItemAngleGrinder"));
-            drill = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x.PrefabName.Equals("ItemDrill"));
+            wrench = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x?.PrefabName?.Equals("ItemWrench") ?? false);
+            grinder = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x?.PrefabName?.Equals("ItemAngleGrinder") ?? false);
+            drill = (Item)WorldManager.Instance.SourcePrefabs.Find(x => x?.PrefabName?.Equals("ItemDrill") ?? false);
             if (wrench == null || grinder == null || drill == null)
             {
                 DeconSwapPlugin.LogError("Failed to find needed tool(s):"
