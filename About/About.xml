@@ -2,7 +2,7 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Frame &amp; Wall DeconSwap</Name>
   <Author>Tallinu</Author>
-  <Version>1.2</Version>
+  <Version>1.2.1</Version>
   <Description>[h1]Frame &amp; Wall DeconSwap[/h1]
 Reduce the chance of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
 Requires [b]BepInEx[/b] and [b]StationeersLaunchPad[/b].
