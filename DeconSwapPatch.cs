@@ -3,7 +3,6 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Objects.Electrical;
 using Objects.Structures;
-using System;
 using System.Collections.Generic;
 
 namespace DeconSwap
@@ -15,6 +14,7 @@ namespace DeconSwap
         private static Item grinder;
         private static Item drill;
         private static int changeCount = 0;
+        private const int expectedChanges = 92;
 
         [HarmonyPatch("LoadAll")]
         [HarmonyPrefix]
@@ -51,9 +51,9 @@ namespace DeconSwap
                     //Frames are handled here.
                     DeconSwapPlugin.Log("Found frame " + frame.PrefabName + " with " + frame.BuildStates.Count + " build state" + (frame.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(frame.BuildStates, wrench, grinder);
-                    if (frame.BuildStates.Count > 2)
+                    if (frame.BuildStates.Count > 2 && DeconSwapPlugin.grindTimeMultiplier.Value > 100)
                     {
-                        float newtime = frame.BuildStates[2].Tool.ExitTime * 1.5f;
+                        float newtime = (float)(((double)DeconSwapPlugin.grindTimeMultiplier.Value / 100.0) * frame.BuildStates[2].Tool.ExitTime);
                         DeconSwapPlugin.Log("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
                         frame.BuildStates[2].Tool.ExitTime = newtime;
                     }
@@ -109,17 +109,24 @@ namespace DeconSwap
                         SwapAllTools(pad.BuildStates, wrench, grinder);
                     }
                 }
+                else if (thing is LandingPadModularDevice paddev && thing.PrefabName.StartsWith("Landingpad_"))
+                {
+                    //'Data & Power' and runway 'Threshhold' (yes, with an extra H) are a separate class
+                    DeconSwapPlugin.Log("Found pad " + paddev.PrefabName + " with " + paddev.BuildStates.Count + " build state" + (paddev.BuildStates.Count != 1 ? "s." : "."));
+                    SwapAllTools(paddev.BuildStates, wrench, grinder);
+                }
                 else if (thing is LandingPadPump pump && thing.PrefabName.StartsWith("Landingpad_"))
                 {
+                    //So are the gas/liquid in/out pump parts
                     DeconSwapPlugin.Log("Found pad " + pump.PrefabName + " with " + pump.BuildStates.Count + " build state" + (pump.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(pump.BuildStates, wrench, grinder);
                 }
             }
 
-            if (changeCount == 89)
+            if (changeCount == expectedChanges)
                 DeconSwapPlugin.Log("Modified " + changeCount + " build states (this is the expected result).");
             else if (changeCount > 0)
-                DeconSwapPlugin.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: 89). Parts added by other mods may have been affected.");
+                DeconSwapPlugin.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: " + expectedChanges + "). Parts added by other mods or game updates may have been affected.");
             else
                 DeconSwapPlugin.LogError("Unexpected: No build states were modified!");
             wrench = null; // Cleanup references? Does this do any good?

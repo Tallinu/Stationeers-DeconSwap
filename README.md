@@ -1,6 +1,6 @@
 # Frame & Wall DeconSwap
 
-Reduce the chance of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second.
+Reduce the chance of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second (this can be adjusted/disabled).
 
 Requires **BepInEx** and **StationeersLaunchPad**, see below.
 
@@ -12,7 +12,9 @@ Requires **BepInEx** and **StationeersLaunchPad**, see below.
 
 Meanwhile, the initial placement of frames, walls, and landing pads, which you perform with your bare hands, requires a grinder and battery charge to undo -- even though most other construction tasks that are reversed by a grinder are [i]welding operations[/i].
 
-This mod increases safety and tool usage consistency by editing some build states of frames, walls, and landing pads, swapping the use of wrench and grinder around so that frame and pad welding steps are undone with the grinder, and the initial placement stages are picked up easily with the wrench. The time required to grind open the final, airtight stage of a frame is also slightly increased to help prevent accidents.
+This mod increases safety and tool usage consistency by editing some build states of frames, walls, and landing pads. It swaps the use of wrench and grinder around so that frame and pad welding steps are undone with the grinder, and the initial placement stages are picked up just as easily with the wrench.
+
+By default, the time required to grind open the final, airtight stage of a frame is also slightly increased to help prevent accidents if you do need to grind something with an important frame behind it. The exact time factor can be configured in the game's Workshop menu. A setting of 100% disables this. Larger values, such as the default of 150%, make it take proportionally longer.
 
 In terms of game balance, you'll use more grinder charge for dismantling fully welded frames, but won't need it for walls, and most landing pad pieces still require the same operations, just in reverse order. Seems close enough to me, and well worth the benefits.
 
