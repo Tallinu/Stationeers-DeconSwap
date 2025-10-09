@@ -2,7 +2,7 @@ Reduce the chance of hull breaches and improve tool usage consistency by swappin
 
 Requires [b]BepInEx[/b] and [b]StationeersLaunchPad[/b], see below.
 
-The changes made by this mod are not retained in your save games, so you can freely try it and remove it.
+[i]The changes made by this mod are not retained in your save games, so you can freely try it and remove it.[/i]
 
 [hr][/hr]
 [h2]Why bother? Why these tools?[/h2]
@@ -17,14 +17,20 @@ By default, the time required to grind open the final, airtight stage of a frame
 
 In terms of game balance, you'll use more grinder charge for dismantling fully welded frames, but won't need it for walls, and most landing pad pieces still require the same operations, just in reverse order. Seems close enough to me, and well worth the benefits.
 
-With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long.
+With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long, and the tools needed for dismantling may be a little easier to remember.
 
 [hr][/hr]
 [h2]Installing the mod loader[/h2]
 
 If you haven't done so already, you'll need to install StationeersLaunchPad and BepInEx in order for plugin mods like this one to work.
 
-Start by going to the home of StationeersLaunchPad:
+Start by going to the home of StationeersLaunchPad on Github:
 https://github.com/StationeersLaunchPad/StationeersLaunchPad
 
 Scroll down a little to its 'Readme' for full instructions, including the link to BepInEx and instructions for installing that. If you need help figuring out how to do this correctly, I recommend visiting the Stationeers discord for real-time help.
+
+[hr][/hr]
+[h2]Source Code[/h2]
+
+If you want to look at the code for Frame & Wall DeconSwap or build it yourself, you can find that on Github too:
+https://github.com/Tallinu/Stationeers-DeconSwap

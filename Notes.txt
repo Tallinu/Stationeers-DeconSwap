@@ -1,0 +1,16 @@
+Second build state, weld dismantled by wrench
+StructurePassthroughHeatExchangerGasToGas
+StructurePassthroughHeatExchangerGasToLiquid
+StructurePassthroughHeatExchangerLiquidToLiquid
+
+Second build state, pipe dismantled by drill
+Third build state, weld dismantled by drill
+StructureLargeDirectHeatExchangeGastoGas
+StructureLargeDirectHeatExchangeGastoLiquid
+StructureLargeDirectHeatExchangeLiquidtoLiquid
+
+
+
+Check what dismantles second state weld:
+StructureMediumConvectionRadiator
+StructureMediumConvectionRadiatorLiquid
