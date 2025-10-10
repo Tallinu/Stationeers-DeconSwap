@@ -2,7 +2,7 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Frame &amp; Wall DeconSwap</Name>
   <Author>Tallinu</Author>
-  <Version>1.2.2</Version>
+  <Version>1.2.3</Version>
   <Description>
 Reduce the chance of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second (this can be adjusted/disabled).
 
@@ -24,6 +24,11 @@ By default, the time required to grind open the final, airtight stage of a frame
 In terms of game balance, you'll use more grinder charge for dismantling fully welded frames, but won't need it for walls, and most landing pad pieces still require the same operations, just in reverse order. Seems close enough to me, and well worth the benefits.
 
 With DeconSwap, dismantling pipes won't vent your base if you misclick, twitch, or hold the button a moment too long, and the tools needed for dismantling may be a little easier to remember.
+
+[hr][/hr]
+[h2]Multiplayer[/h2]
+
+DeconSwap works fine in multiplayer, as long as all parties have the mod installed. It will not let you join a hosted game or server if you have the mod enabled and they don't, or vice versa. (Testing showed that the mismatched tools would prevent you from being able to dismantle any of the modified frame or wall states that require the wrench or grinder.) I'm afraid you'll just have to convince your whole Stationeer team to install it! *wink*
 
 [hr][/hr]
 [h2]Installing the mod loader[/h2]

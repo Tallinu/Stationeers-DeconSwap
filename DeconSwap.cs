@@ -13,7 +13,7 @@ namespace DeconSwap
         public static DeconSwapPlugin Instance;
         public const string PluginGuid = "stationeers.DeconSwap";
         public const string PluginName = "Frame & Wall DeconSwap";
-        public const string PluginVersion = "1.2.2";
+        public const string PluginVersion = "1.2.3";
         private const string logPrefix = "[F&WDeconSwap] ";
         public static Mod mod = new Mod(PluginGuid, PluginVersion);
 
@@ -37,6 +37,8 @@ namespace DeconSwap
         void Awake()
         {
             Instance = this;
+            mod.SetMultiplayerRequired(); // Return to non-SLPBooster default behavior of not allowing MP join unless both parties have the mod!
+
             try
             {
                 // Harmony.DEBUG = true;
