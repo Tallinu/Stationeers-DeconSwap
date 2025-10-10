@@ -50,6 +50,7 @@ https://github.com/Tallinu/Stationeers-DeconSwap
 Reduce the risk of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased (this can be adjusted/disabled).
 Requires <color=#22ff33><b>BepInEx</b></color> and <color=#22ff33><b>StationeersLaunchPad</b></color> to work.
 <i>The changes made by this mod are not retained in your save games, so you can freely try it and remove it.</i>
+<i>For multiplayer, <color=#22ff33>everyone</color> must have the mod installed (including the host/server).</i>
 <size=25><color=#02d1fa><b>Why bother? Why these tools?</b></color></size>
 "Unwelding" a sealed frame with a <i>wrench</i> (how??) is way too easy to do <color=#ffff00>accidentally</color> while working on your <color=#ffff00>plumbing</color>, risking <color=#ff2020>dangerous hull breaches!</color> Meanwhile, you place frames, walls, and landing pads with your <i>bare hands</i>, but need a charged <i>grinder</i> to pick them up again, even though most other tasks reversed by a grinder are <i>welding</i> operations.
 This mod edits specific build states of frames, walls, and landing pads, swapping the use of wrench and grinder so frame and pad <i>welding</i> steps are undone with the <i>grinder</i>, and tool-free <i>placement</i> steps are picked up easily with the <i>wrench</i>.
