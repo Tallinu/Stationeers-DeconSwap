@@ -15,7 +15,6 @@ namespace DeconSwap
     {
         private static int changeCount = 0;
         private const int expectedChanges = 92;
-        private static bool ExtraLogOutput = true;
 
         [HarmonyPatch("LoadAll")]
         [HarmonyPrefix]
@@ -158,6 +157,10 @@ namespace DeconSwap
                         SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
                 }
+                else if (thing.PrefabName.StartsWith("StructureIndustrial")
+                      || thing.PrefabName.StartsWith("StructureDispersalTower")
+                      || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
+                else if (thing is LandingPadDeprecated) { } // Deprecated, no handling needed
                 else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
                 {
                     //Extra log outputs of build states that break Welder/Grinder Symmetry
