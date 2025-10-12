@@ -79,7 +79,7 @@ namespace DeconSwap
                 {
                     if (thing.PrefabName.StartsWith("StructureElevator"))
                     {
-                        // Elevators, normally grinder for state 0. Basically a large device, so Drill seems more appropriate.
+                        // Elevators, normally grinder for state 0. Basically a large electrical device, so drill seems more appropriate.
                         LogFoundStructure("elevator", thing as Structure);
                         SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Drill);
                     }
@@ -98,10 +98,25 @@ namespace DeconSwap
                 }
                 else if (thing is LargeSatelliteDish && thing.PrefabName.Equals("StructureLargeSatelliteDish"))
                 {
-                    LogFoundStructure("dish", thing as Structure);
+                    LogFoundStructure("satellite dish", thing as Structure);
                     SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with wrench (no parts)
                     SwapTools(thing as Structure, 3, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with screwdriver (no parts)
                     SwapTools(thing as Structure, 4, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
+                }
+
+                // Heat Exchangers
+                else if (thing is PassthroughHeatExchanger && thing.PrefabName.StartsWith("StructurePassthroughHeatExchanger"))
+                {
+                    // Counterflow
+                    LogFoundStructure("heat exchanger", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
+                }
+                else if (thing is DirectHeatExchanger && thing.PrefabName.StartsWith("StructureLargeDirectHeatExchange"))
+                {
+                    // Large Direct
+                    LogFoundStructure("heat exchanger", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.Wrench);       // Assembled with pipes
+                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder); // Assembled with welder
                 }
 
                 // Tunnel boring machines
