@@ -131,23 +131,32 @@ namespace DeconSwap
                     LogFoundStructure("rocket part", thing as Structure);
                     SwapTools(thing as Structure, 1, PrefabNames.AngleGrinder, PrefabNames.Wrench);
                 }
-                else if (thing is EngineFuselage && thing.PrefabName.Equals("StructureEngineMountTypeA1"))
+                else if (thing is EngineFuselage)
                 {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    if (thing.PrefabName.Equals("StructureEngineMountTypeA1"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
                 }
-                else if (thing is NoseCone && thing.PrefabName.StartsWith("StructureFairingTypeA"))
+                else if (thing is NoseCone)
                 {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    if (thing.PrefabName.StartsWith("StructureFairingTypeA"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
                 }
-                else if (thing is Fuselage && (thing.PrefabName.Equals("StructureFuselageTypeA1")
-                                            || thing.PrefabName.Equals("StructureFuselageTypeA2")
-                                            || thing.PrefabName.Equals("StructureFuselageTypeA4")
-                                            || thing.PrefabName.Equals("StructureFuselageTypeC5")))
+                else if (thing is Fuselage)
                 {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    if (thing.PrefabName.Equals("StructureFuselageTypeA1")
+                     || thing.PrefabName.Equals("StructureFuselageTypeA2")
+                     || thing.PrefabName.Equals("StructureFuselageTypeA4")
+                     || thing.PrefabName.Equals("StructureFuselageTypeC5"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
                 }
                 else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
                 {
