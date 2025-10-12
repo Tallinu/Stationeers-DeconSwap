@@ -2,6 +2,7 @@
 using Assets.Scripts.Objects.Chutes;
 using Assets.Scripts.Objects.Electrical;
 using Assets.Scripts.Objects.Pipes;
+using Assets.Scripts.Objects.Structures;
 using HarmonyLib;
 using JetBrains.Annotations;
 using LaunchPadBooster.Utils;
@@ -72,6 +73,31 @@ namespace DeconSwap
                     //and all of their Build State 0's are normally dismantled with the same tool (grinder) just like regular walls are.
                     LogFoundStructure("wall", thing as Structure);
                     SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+
+                // Doors and airlocks
+                else if (thing is Airlock || thing is Door || thing is RoboticArmDoor)
+                {
+                    // Hangar aka 'Hanger' doors; the small isn't welded, it only has one build state.
+                    if (thing.PrefabName.Equals("StructureAirlockGate")) { } // Small hangar
+                    else if (thing.PrefabName.Equals("StructureLargeHangerDoor")
+                     || thing.PrefabName.Equals("StructureMediumHangerDoor"))
+                    {
+                        LogFoundStructure("hangar", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing.PrefabName.Equals("StructureBlastDoor")
+                     || thing.PrefabName.StartsWith("StructureAirlock") // Airlock and AirlockWide
+                     || thing.PrefabName.Equals("StructureGlassDoor")
+                     || thing.PrefabName.Equals("StructureCompositeDoor")
+                     || thing.PrefabName.Equals("StructureRobotArmDoor"))
+                    {
+                        // All of these use drill for unwelding state 1 and grinder for sheets that were crowbarred in.
+                        // Swapping the drill and grinder makes just about 75% more sense while also avoiding increased risk of accidental door disassembly!
+                        LogFoundStructure("door", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                        SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                    }
                 }
 
                 // Various large devices
