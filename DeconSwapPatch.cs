@@ -157,10 +157,18 @@ namespace DeconSwap
                         SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
                 }
+                else if (thing is RocketTower && thing.PrefabName.Equals("StructureRocketTower"))
+                {
+                    // Launch tower where you attach umbilicals
+                    LogFoundStructure("launch tower", thing as Structure);
+                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                }
+
                 else if (thing.PrefabName.StartsWith("StructureIndustrial")
                       || thing.PrefabName.StartsWith("StructureDispersalTower")
                       || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
                 else if (thing is LandingPadDeprecated) { } // Deprecated, no handling needed
+
                 else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
                 {
                     //Extra log outputs of build states that break Welder/Grinder Symmetry
