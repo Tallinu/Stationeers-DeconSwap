@@ -96,6 +96,13 @@ namespace DeconSwap
                     LogFoundStructure("stirling", thing as Structure);
                     SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
+                else if (thing is LargeSatelliteDish && thing.PrefabName.Equals("StructureLargeSatelliteDish"))
+                {
+                    LogFoundStructure("dish", thing as Structure);
+                    SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with wrench (no parts)
+                    SwapTools(thing as Structure, 3, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with screwdriver (no parts)
+                    SwapTools(thing as Structure, 4, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
+                }
 
                 // Tunnel boring machines
                 else if (thing is Quarry && thing.PrefabName.Equals("StructureAutoMinerSmall"))
