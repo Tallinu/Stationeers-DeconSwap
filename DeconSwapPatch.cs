@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Objects;
+using Assets.Scripts.Objects.Electrical;
 using Assets.Scripts.Objects.Pipes;
 using HarmonyLib;
 using JetBrains.Annotations;
@@ -105,6 +106,49 @@ namespace DeconSwap
                     LogFoundStructure("pad", thing as Structure);
                     SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
+                else if (thing is RocketAvionicsDevice && thing.PrefabName.Equals("StructureRocketAvionics"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                }
+                else if (thing is RocketCelestialTracker && thing.PrefabName.Equals("StructureRocketCelestialTracker"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                }
+                else if (thing is RocketScanner && thing.PrefabName.Equals("StructureRocketScanner"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
+                }
+                else if (thing is RocketChuteStorage && thing.PrefabName.Equals("StructureCargoStorageMedium"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+                else if (thing is RocketGasCollector && thing.PrefabName.Equals("StructureRocketGasCollector"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                }
+                else if (thing is EngineFuselage && thing.PrefabName.Equals("StructureEngineMountTypeA1"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+                else if (thing is NoseCone && thing.PrefabName.StartsWith("StructureFairingTypeA"))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+                else if (thing is Fuselage && (thing.PrefabName.Equals("StructureFuselageTypeA1")
+                                            || thing.PrefabName.Equals("StructureFuselageTypeA2")
+                                            || thing.PrefabName.Equals("StructureFuselageTypeA4")
+                                            || thing.PrefabName.Equals("StructureFuselageTypeC5")))
+                {
+                    LogFoundStructure("rocket part", thing as Structure);
+                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
                 else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
                 {
                     //Extra log outputs of build states that break Welder/Grinder Symmetry
@@ -113,7 +157,7 @@ namespace DeconSwap
                         if (struc.BuildStates[i].Tool.ToolEntry?.PrefabName == PrefabNames.Welder
                             && struc.BuildStates[i].Tool.ToolExit?.PrefabName != PrefabNames.AngleGrinder)
                         {
-                            DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
+                            DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
                         }
                     }
                     if (struc.BuildStates.Count > 1)
@@ -125,7 +169,7 @@ namespace DeconSwap
                                 && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != null
                                 && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != PrefabNames.Welder)
                             {
-                                DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " build state " + i + " grinds a " + struc.BuildStates[i].Tool.ToolEntry.PrefabName + " job");
+                                DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " grinds a " + struc.BuildStates[i].Tool.ToolEntry.PrefabName + " job");
                             }
                         }
                     }
