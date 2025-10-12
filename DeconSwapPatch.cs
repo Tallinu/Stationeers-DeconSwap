@@ -24,7 +24,7 @@ namespace DeconSwap
             if (changeCount != 0)
             {
                 DeconSwapPlugin.logger.LogError("More than one copy of this plugin is being loaded! Please remove the extras. Check your workshop subscriptions,"
-                    + " the BepInEx plugins folder, and the Stationeers mods folder (next to the saves folder in Documents/My Games).");
+                    + " the BepInEx plugins folder, and the Stationeers local mods folder (next to the saves folder in Documents\\My Games\\Stationeers).");
                 return;
             }
 
@@ -72,6 +72,18 @@ namespace DeconSwap
                     LogFoundStructure("wall", thing as Structure);
                     SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
+
+                else if (thing is ElevatorLevel || thing is ElevatorShaft)
+                {
+                    if (thing.PrefabName.StartsWith("StructureElevator"))
+                    {
+                        // Elevators, normally grinder for state 0. Basically a large device, so Drill seems more appropriate.
+                        LogFoundStructure("elevator", thing as Structure);
+                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                    }
+                }
+
+                // Landing pad components
                 else if ((thing is LandingPadModular) && thing.PrefabName.StartsWith("Landingpad_") && !thing.PrefabName.Equals("Landingpad_2x2CenterPiece01"))
                 {
                     //Landing pad parts also use grinder to pick up initial placement (except new large tank) and wrench to unweld steel sheets.
@@ -105,6 +117,8 @@ namespace DeconSwap
                     LogFoundStructure("pad", thing as Structure);
                     SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
+
+                // Rocket components and structure
                 else if (thing is RocketAvionicsDevice && thing.PrefabName.Equals("StructureRocketAvionics"))
                 {
                     LogFoundStructure("rocket part", thing as Structure);
@@ -159,8 +173,21 @@ namespace DeconSwap
                 }
                 else if (thing is RocketTower && thing.PrefabName.Equals("StructureRocketTower"))
                 {
-                    // Launch tower where you attach umbilicals
+                    // Launch tower for umbilicals, normally grinder for state 0
                     LogFoundStructure("launch tower", thing as Structure);
+                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                }
+
+                else if ((thing is Ladder || thing is LadderEnd) && thing.PrefabName.StartsWith("StructureLadder"))
+                {
+                    // Ladders, normally grinder for state 0
+                    LogFoundStructure("ladder", thing as Structure);
+                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                }
+                else if (thing is Cladding && thing.PrefabName.StartsWith("StructureCompositeCladding"))
+                {
+                    // Cladding, normally grinder for state 0
+                    LogFoundStructure("cladding", thing as Structure);
                     SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
                 }
 
