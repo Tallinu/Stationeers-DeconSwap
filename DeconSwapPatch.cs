@@ -20,7 +20,7 @@ namespace DeconSwap
         {
             if (changeCount != 0)
             {
-                DeconSwapPlugin.LogError("More than one copy of this plugin is being loaded! Please remove the extras. Check your workshop subscriptions,"
+                DeconSwapPlugin.logger.LogError("More than one copy of this plugin is being loaded! Please remove the extras. Check your workshop subscriptions,"
                     + " the BepInEx plugins folder, and the Stationeers mods folder (next to the saves folder in Documents/My Games).");
                 return;
             }
@@ -31,12 +31,12 @@ namespace DeconSwap
                 if (thing is Frame frame && thing.PrefabName.StartsWith("StructureFrame"))
                 {
                     //Frames are handled here.
-                    DeconSwapPlugin.Log("Found frame " + frame.PrefabName + " with " + frame.BuildStates.Count + " build state" + (frame.BuildStates.Count != 1 ? "s." : "."));
+                    DeconSwapPlugin.logger.LogInfo("Found frame " + frame.PrefabName + " with " + frame.BuildStates.Count + " build state" + (frame.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(frame, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     if (frame.BuildStates.Count > 2 && DeconSwapPlugin.grindTimeMultiplier.Value > 100)
                     {
                         float newtime = (float)(((double)DeconSwapPlugin.grindTimeMultiplier.Value / 100.0) * frame.BuildStates[2].Tool.ExitTime);
-                        DeconSwapPlugin.Log("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
+                        DeconSwapPlugin.logger.LogInfo("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
                         frame.BuildStates[2].Tool.ExitTime = newtime;
                     }
                 }
@@ -52,13 +52,13 @@ namespace DeconSwap
                     if (thing is Wall wall)
                     {
                         //Normal walls of all kinds, and 2 of 3 window shutter pieces get handled here.
-                        DeconSwapPlugin.Log("Found wall " + wall.PrefabName + " with " + wall.BuildStates.Count + " build state" + (wall.BuildStates.Count != 1 ? "s." : "."));
+                        DeconSwapPlugin.logger.LogInfo("Found wall " + wall.PrefabName + " with " + wall.BuildStates.Count + " build state" + (wall.BuildStates.Count != 1 ? "s." : "."));
                         SwapAllTools(wall, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
                     else if (thing is WallPillar wallp)
                     {
                         //These don't use the Wall class and have to be handled separately
-                        DeconSwapPlugin.Log("Found pillar " + wallp.PrefabName + " with " + wallp.BuildStates.Count + " build state" + (wallp.BuildStates.Count != 1 ? "s." : "."));
+                        DeconSwapPlugin.logger.LogInfo("Found pillar " + wallp.PrefabName + " with " + wallp.BuildStates.Count + " build state" + (wallp.BuildStates.Count != 1 ? "s." : "."));
                         SwapAllTools(wallp, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
                 }
@@ -67,13 +67,13 @@ namespace DeconSwap
                     //Special case to swap this even though it's not a Wall class, because all window shutter parts are made from the same kit,
                     //and all of their Build State 0's are normally dismantled with the same tool (grinder) just like regular walls are.
                     int count = wsc.BuildStates.Count;
-                    DeconSwapPlugin.Log("Found wall " + wsc.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
+                    DeconSwapPlugin.logger.LogInfo("Found wall " + wsc.PrefabName + " with " + count + " build state" + (count != 1 ? "s." : "."));
                     SwapAllTools(wsc, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
                 else if ((thing is LandingPadModular pad) && thing.PrefabName.StartsWith("Landingpad_") && !thing.PrefabName.Equals("Landingpad_2x2CenterPiece01"))
                 {
                     //Landing pad parts also use grinder to pick up initial placement (except new large tank) and wrench to unweld steel sheets.
-                    DeconSwapPlugin.Log("Found pad " + pad.PrefabName + " with " + pad.BuildStates.Count + " build state" + (pad.BuildStates.Count != 1 ? "s." : "."));
+                    DeconSwapPlugin.logger.LogInfo("Found pad " + pad.PrefabName + " with " + pad.BuildStates.Count + " build state" + (pad.BuildStates.Count != 1 ? "s." : "."));
                     if (pad.PrefabName.Equals("Landingpad_GasCylinderTankPiece"))
                     {
                         // Landingpad_GasCylinderTankPiece - Wrench (tank), Grinder (base) - Change BS 0 grinder to wrench, BS 1 wrench to drill
@@ -94,36 +94,36 @@ namespace DeconSwap
                 else if (thing is LandingPadModularDevice paddev && thing.PrefabName.StartsWith("Landingpad_"))
                 {
                     //'Data & Power' and runway 'Threshhold' (yes, with an extra H) are a separate class
-                    DeconSwapPlugin.Log("Found pad " + paddev.PrefabName + " with " + paddev.BuildStates.Count + " build state" + (paddev.BuildStates.Count != 1 ? "s." : "."));
+                    DeconSwapPlugin.logger.LogInfo("Found pad " + paddev.PrefabName + " with " + paddev.BuildStates.Count + " build state" + (paddev.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(paddev, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
                 else if (thing is LandingPadPump padpump && thing.PrefabName.StartsWith("Landingpad_"))
                 {
                     //So are the gas/liquid in/out pump parts
-                    DeconSwapPlugin.Log("Found pad " + padpump.PrefabName + " with " + padpump.BuildStates.Count + " build state" + (padpump.BuildStates.Count != 1 ? "s." : "."));
+                    DeconSwapPlugin.logger.LogInfo("Found pad " + padpump.PrefabName + " with " + padpump.BuildStates.Count + " build state" + (padpump.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(padpump, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
             }
 
             if (changeCount == expectedChanges)
-                DeconSwapPlugin.Log("Modified " + changeCount + " build states (this is the expected result).");
+                DeconSwapPlugin.logger.LogInfo("Modified " + changeCount + " build states (this is the expected result).");
             else if (changeCount > 0)
-                DeconSwapPlugin.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: " + expectedChanges + "). Parts added by other mods or game updates may have been affected.");
+                DeconSwapPlugin.logger.LogWarning("Unexpected: Modified " + changeCount + " build states (expected: " + expectedChanges + "). Parts added by other mods or game updates may have been affected.");
             else
-                DeconSwapPlugin.LogError("Unexpected: No build states were modified!");
+                DeconSwapPlugin.logger.LogError("Unexpected: No build states were modified!");
         }
 
         private static void SwapTools(Structure structure, int state, string tool1, string tool2)
         {
             if (structure.BuildStates[state].Tool.ToolExit?.PrefabName == tool1)
             {
-                DeconSwapPlugin.Log("  Swapping build state " + state + " dismantle tool from " + tool1 + " to " + tool2 + ".");
+                DeconSwapPlugin.logger.LogInfo("  Swapping build state " + state + " dismantle tool from " + tool1 + " to " + tool2 + ".");
                 structure.SetExitTool(tool2, state);
                 changeCount++;
             }
             else if (structure.BuildStates[state].Tool.ToolExit?.PrefabName == tool2)
             {
-                DeconSwapPlugin.Log("  Swapping build state " + state + " dismantle tool from " + tool2 + " to " + tool1 + ".");
+                DeconSwapPlugin.logger.LogInfo("  Swapping build state " + state + " dismantle tool from " + tool2 + " to " + tool1 + ".");
                 structure.SetExitTool(tool1, state);
                 changeCount++;
             }

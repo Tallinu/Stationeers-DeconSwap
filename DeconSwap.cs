@@ -14,42 +14,30 @@ namespace DeconSwap
         public const string PluginGuid = "stationeers.DeconSwap";
         public const string PluginName = "Frame & Wall DeconSwap";
         public const string PluginVersion = "1.2.3";
-        private const string logPrefix = "[F&WDeconSwap] ";
         public static Mod mod = new Mod(PluginGuid, PluginVersion);
 
+        public static BepInEx.Logging.ManualLogSource logger = new BepInEx.Logging.ManualLogSource("F&W DeconSwap");
 
         public static ConfigEntry<int> grindTimeMultiplier;
-
-
-        public static void Log(string line)
-        {
-            Debug.Log(logPrefix + line);
-        }
-        public static void LogWarning(string line)
-        {
-            Debug.LogWarning(logPrefix + line);
-        }
-        public static void LogError(string line)
-        {
-            Debug.LogError(logPrefix + line);
-        }
 
         void Awake()
         {
             Instance = this;
             mod.SetMultiplayerRequired(); // Return to non-SLPBooster default behavior of not allowing MP join unless both parties have the mod!
 
+            BepInEx.Logging.Logger.Sources.Add(logger);
+
             try
             {
                 // Harmony.DEBUG = true;
                 var harmony = new Harmony(PluginGuid);
                 harmony.PatchAll();
-                Log("Patch succeeded");
+                logger.LogInfo("Patch Complete.");
             }
             catch (Exception e)
             {
-                LogError("Patch Failed");
-                LogError(e.ToString());
+                logger.LogError("Patch Failed");
+                logger.LogError(e.ToString());
             }
 
             grindTimeMultiplier = this.Config.Bind(new ConfigDefinition("TimeScale", "FrameGrindMultiplier"), 150, new ConfigDescription(
