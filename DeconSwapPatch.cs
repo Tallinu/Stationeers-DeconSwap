@@ -160,6 +160,10 @@ namespace DeconSwap
                             DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
                         }
                     }
+                    if (struc.BuildStates[0].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder)
+                    {
+                        DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state 0 grinds initial placement");
+                    }
                     if (struc.BuildStates.Count > 1)
                     {
                         for (int i = 1; i < struc.BuildStates.Count; i++)
