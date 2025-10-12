@@ -89,6 +89,12 @@ namespace DeconSwap
                     LogFoundStructure("silo", thing as Structure);
                     SwapTools(thing as Structure, 2, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
                 }
+                else if (thing is StirlingEngine && thing.PrefabName.Equals("StructureStirlingEngine"))
+                {
+                    // Stirling Engine build state 1 normally unwelded with wrench instead of grinder.
+                    LogFoundStructure("stirling", thing as Structure);
+                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
 
                 // Landing pad components
                 else if ((thing is LandingPadModular) && thing.PrefabName.StartsWith("Landingpad_") && !thing.PrefabName.Equals("Landingpad_2x2CenterPiece01"))
