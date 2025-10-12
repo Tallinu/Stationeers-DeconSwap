@@ -2,7 +2,7 @@
   "profiles": {
     "Stationeers": {
       "commandName": "Executable",
-      "executablePath": "H:\\Games\\Stationeers Beta\\rocketstation.exe"
+      "executablePath": "H:\\Games\\SteamLibrary\\steamapps\\common\\Stationeers\\rocketstation.exe"
     }
   }
 }

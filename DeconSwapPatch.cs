@@ -12,6 +12,7 @@ namespace DeconSwap
     {
         private static int changeCount = 0;
         private const int expectedChanges = 92;
+        private static bool ExtraLogOutput = true;
 
         [HarmonyPatch("LoadAll")]
         [HarmonyPrefix]
@@ -102,6 +103,32 @@ namespace DeconSwap
                     //So are the gas/liquid in/out pump parts
                     DeconSwapPlugin.logger.LogInfo("Found pad " + padpump.PrefabName + " with " + padpump.BuildStates.Count + " build state" + (padpump.BuildStates.Count != 1 ? "s." : "."));
                     SwapAllTools(padpump, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+                else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
+                {
+                    //Extra log outputs of build states that break Welder/Grinder Symmetry
+                    for (int i = 0; i < struc.BuildStates.Count; i++)
+                    {
+                        if (struc.BuildStates[i].Tool.ToolEntry?.PrefabName == PrefabNames.Welder
+                            && struc.BuildStates[i].Tool.ToolExit?.PrefabName != PrefabNames.AngleGrinder)
+                        {
+                            DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
+                        }
+                    }
+                    if (struc.BuildStates.Count > 1)
+                    {
+                        for (int i = 1; i < struc.BuildStates.Count; i++)
+                        {
+                            if (struc.BuildStates[i].Tool.ToolExit?.PrefabName != null
+                                && struc.BuildStates[i].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder
+                                && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != null
+                                && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != PrefabNames.Welder)
+                            {
+                                DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " build state " + i + " grinds a " + struc.BuildStates[i].Tool.ToolEntry.PrefabName + " job");
+                            }
+                        }
+                    }
+
                 }
             }
 
