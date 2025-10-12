@@ -74,6 +74,7 @@ namespace DeconSwap
                     SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                 }
 
+                // Various large devices
                 else if (thing is ElevatorLevel || thing is ElevatorShaft)
                 {
                     if (thing.PrefabName.StartsWith("StructureElevator"))
@@ -94,6 +95,22 @@ namespace DeconSwap
                     // Stirling Engine build state 1 normally unwelded with wrench instead of grinder.
                     LogFoundStructure("stirling", thing as Structure);
                     SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                }
+
+                // Tunnel boring machines
+                else if (thing is Quarry && thing.PrefabName.Equals("StructureAutoMinerSmall"))
+                {
+                    // Basic autominer normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
+                    LogFoundStructure("autominer", thing as Structure);
+                    SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
+                }
+                else if (thing is HorizontalQuarry && thing.PrefabName.Equals("StructureHorizontalAutoMiner"))
+                {
+                    // Ogre normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
+                    LogFoundStructure("autominer", thing as Structure);
+                    SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
                 }
 
                 // Landing pad components
