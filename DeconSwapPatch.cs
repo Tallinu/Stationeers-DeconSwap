@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Objects;
+using Assets.Scripts.Objects.Chutes;
 using Assets.Scripts.Objects.Electrical;
 using Assets.Scripts.Objects.Pipes;
 using HarmonyLib;
@@ -81,6 +82,12 @@ namespace DeconSwap
                         LogFoundStructure("elevator", thing as Structure);
                         SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Drill);
                     }
+                }
+                else if (thing is Silo && thing.PrefabName.Equals("StructureSDBSilo"))
+                {
+                    // Saddamo/Adam De Beers-inspired Silo. Build state 2 normally unwelded with crowbar instead of grinder.
+                    LogFoundStructure("silo", thing as Structure);
+                    SwapTools(thing as Structure, 2, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
                 }
 
                 // Landing pad components
