@@ -9,6 +9,7 @@ using LaunchPadBooster.Utils;
 using Objects.Electrical;
 using Objects.Rockets;
 using Objects.Structures;
+using System;
 
 namespace DeconSwap
 {
@@ -16,7 +17,7 @@ namespace DeconSwap
     public static class PrefabLoadAllPatch
     {
         private static int changeCount = 0;
-        private const int expectedChanges = 92;
+        private const int expectedChanges = 172;
 
         [HarmonyPatch("LoadAll")]
         [HarmonyPrefix]
@@ -30,282 +31,290 @@ namespace DeconSwap
                 return;
             }
 
+            int iter = 0;
             //Search prefabs list for structures to modify.
             foreach (Thing thing in WorldManager.Instance.SourcePrefabs)
             {
-                if (thing is Frame frame && thing.PrefabName.StartsWith("StructureFrame"))
+                iter++;
+                try
                 {
-                    //Frames are handled here.
-                    LogFoundStructure("frame", thing as Structure);
-                    SwapAllTools(frame, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    if (frame.BuildStates.Count > 2 && DeconSwapPlugin.grindTimeMultiplier.Value > 100)
+                    if (thing == null)
                     {
-                        float newtime = (float)(((double)DeconSwapPlugin.grindTimeMultiplier.Value / 100.0) * frame.BuildStates[2].Tool.ExitTime);
-                        DeconSwapPlugin.logger.LogInfo("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
-                        frame.BuildStates[2].Tool.ExitTime = newtime;
+                        DeconSwapPlugin.logger.LogWarning("Entry number " + iter + " in WorldManager SourcePrefabs is NULL!");
                     }
-                }
-                else if ((thing is Wall || thing is WallPillar)
-                      && (thing.PrefabName.StartsWith("StructureWall") /* Main wall whitelist */
-                      || thing.PrefabName.StartsWith("StructureComposite")
-                      || thing.PrefabName.StartsWith("StructureReinforced")) /* Next, blacklist of some that otherwise match: */
-                      && !thing.PrefabName.Equals("StructureReinforcedWall") /* Already uses desired tools, don't swap them */
-                      && !thing.PrefabName.Equals("StructureWallSmallPanelsOpen") /* Dismantled with crowbar */
-                      && !thing.PrefabName.StartsWith("StructureCompositeWallType") /* Dismantled with crowbar */
-                      && !thing.PrefabName.StartsWith("StructureCompositeFloorGrating")) /* Dismantled with crowbar */
-                {
-                    if (thing is Wall)
+                    else if (thing is Frame frame && thing.PrefabName.StartsWith("StructureFrame"))
                     {
-                        //Normal walls of all kinds, and 2 of 3 window shutter pieces get handled here.
+                        //Frames are handled here.
+                        LogFoundStructure("frame", thing as Structure);
+                        SwapAllTools(frame, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        if (frame.BuildStates.Count > 2 && DeconSwapPlugin.grindTimeMultiplier.Value > 100)
+                        {
+                            float newtime = (float)(((double)DeconSwapPlugin.grindTimeMultiplier.Value / 100.0) * frame.BuildStates[2].Tool.ExitTime);
+                            DeconSwapPlugin.logger.LogInfo("  Increasing build state 2 dismantle time from " + frame.BuildStates[2].Tool.ExitTime + " to " + newtime);
+                            frame.BuildStates[2].Tool.ExitTime = newtime;
+                        }
+                    }
+                    else if (thing is Wall || thing is WallPillar)
+                    {
+                        if ((thing.PrefabName.StartsWith("StructureWall") /* Main wall whitelist */
+                          || thing.PrefabName.StartsWith("StructureComposite")
+                          || thing.PrefabName.StartsWith("StructureReinforced")) /* Next, blacklist of some that otherwise match: */
+                          && !thing.PrefabName.Equals("StructureReinforcedWall") /* Already uses desired tools, don't swap them */
+                          && !thing.PrefabName.Equals("StructureWallSmallPanelsOpen") /* Dismantled with crowbar */
+                          && !thing.PrefabName.StartsWith("StructureCompositeWallType") /* Dismantled with crowbar */
+                          && !thing.PrefabName.StartsWith("StructureCompositeFloorGrating")) /* Dismantled with crowbar */
+                        {
+                            //Normal walls and wall pillars of all kinds, and 2 of 3 window shutter pieces get handled here.
+                            LogFoundStructure("wall", thing as Structure);
+                            SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        }
+                    }
+                    else if (thing is WindowShutterController)
+                    {
+                        //Special case to swap this even though it's not a Wall class, because all window shutter parts are made from the same kit,
+                        //and all of their Build State 0's are normally dismantled with the same tool (grinder) just like regular walls are.
                         LogFoundStructure("wall", thing as Structure);
                         SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
-                    else if (thing is WallPillar)
-                    {
-                        //These don't use the Wall class and have to be handled separately
-                        LogFoundStructure("pillar", thing as Structure);
-                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    }
-                }
-                else if (thing is WindowShutterController)
-                {
-                    //Special case to swap this even though it's not a Wall class, because all window shutter parts are made from the same kit,
-                    //and all of their Build State 0's are normally dismantled with the same tool (grinder) just like regular walls are.
-                    LogFoundStructure("wall", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                }
 
-                // Doors and airlocks
-                else if (thing is Airlock || thing is Door || thing is RoboticArmDoor)
-                {
-                    // Hangar aka 'Hanger' doors; the small isn't welded, it only has one build state.
-                    if (thing.PrefabName.Equals("StructureAirlockGate")) { } // Small hangar
-                    else if (thing.PrefabName.Equals("StructureLargeHangerDoor")
-                     || thing.PrefabName.Equals("StructureMediumHangerDoor"))
+                    // Doors and airlocks
+                    else if (thing is Airlock || thing is Door || thing is RoboticArmDoor)
                     {
-                        LogFoundStructure("hangar", thing as Structure);
+                        // Hangar aka 'Hanger' doors; the small isn't welded, it only has one build state.
+                        if (thing.PrefabName.Equals("StructureAirlockGate")) { } // Small hangar
+                        else if (thing.PrefabName.Equals("StructureLargeHangerDoor")
+                         || thing.PrefabName.Equals("StructureMediumHangerDoor"))
+                        {
+                            LogFoundStructure("hangar", thing as Structure);
+                            SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        }
+                        else if (thing.PrefabName.Equals("StructureBlastDoor")
+                         || thing.PrefabName.StartsWith("StructureAirlock") // Airlock and AirlockWide
+                         || thing.PrefabName.Equals("StructureGlassDoor")
+                         || thing.PrefabName.Equals("StructureCompositeDoor")
+                         || thing.PrefabName.Equals("StructureRobotArmDoor"))
+                        {
+                            // All of these use drill for unwelding state 1 and grinder for sheets that were crowbarred in.
+                            // Swapping the drill and grinder makes just about 75% more sense while also avoiding increased risk of accidental door disassembly!
+                            LogFoundStructure("door", thing as Structure);
+                            SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                            SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                        }
+                    }
+
+                    // Various large devices
+                    else if (thing is ElevatorLevel || thing is ElevatorShaft)
+                    {
+                        if (thing.PrefabName.StartsWith("StructureElevator"))
+                        {
+                            // Elevators, normally grinder for state 0. Basically a large electrical device, so drill seems more appropriate.
+                            LogFoundStructure("elevator", thing as Structure);
+                            SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                        }
+                    }
+                    else if (thing is Silo && thing.PrefabName.Equals("StructureSDBSilo"))
+                    {
+                        // Saddamo/Adam De Beers-inspired Silo. Build state 2 normally unwelded with crowbar instead of grinder.
+                        LogFoundStructure("silo", thing as Structure);
+                        SwapTools(thing as Structure, 2, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing is StirlingEngine && thing.PrefabName.Equals("StructureStirlingEngine"))
+                    {
+                        // Stirling Engine build state 1 normally unwelded with wrench instead of grinder.
+                        LogFoundStructure("stirling", thing as Structure);
                         SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
-                    else if (thing.PrefabName.Equals("StructureBlastDoor")
-                     || thing.PrefabName.StartsWith("StructureAirlock") // Airlock and AirlockWide
-                     || thing.PrefabName.Equals("StructureGlassDoor")
-                     || thing.PrefabName.Equals("StructureCompositeDoor")
-                     || thing.PrefabName.Equals("StructureRobotArmDoor"))
+                    else if (thing is LargeSatelliteDish && thing.PrefabName.Equals("StructureLargeSatelliteDish"))
                     {
-                        // All of these use drill for unwelding state 1 and grinder for sheets that were crowbarred in.
-                        // Swapping the drill and grinder makes just about 75% more sense while also avoiding increased risk of accidental door disassembly!
-                        LogFoundStructure("door", thing as Structure);
-                        SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.AngleGrinder);
-                        SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                        LogFoundStructure("satellite dish", thing as Structure);
+                        SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with wrench (no parts)
+                        SwapTools(thing as Structure, 3, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with screwdriver (no parts)
+                        SwapTools(thing as Structure, 4, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
                     }
-                }
 
-                // Various large devices
-                else if (thing is ElevatorLevel || thing is ElevatorShaft)
-                {
-                    if (thing.PrefabName.StartsWith("StructureElevator"))
+                    // Heat Exchangers
+                    else if (thing is PassthroughHeatExchanger && thing.PrefabName.StartsWith("StructurePassthroughHeatExchanger"))
                     {
-                        // Elevators, normally grinder for state 0. Basically a large electrical device, so drill seems more appropriate.
-                        LogFoundStructure("elevator", thing as Structure);
-                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Drill);
+                        // Counterflow
+                        LogFoundStructure("heat exchanger", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
                     }
-                }
-                else if (thing is Silo && thing.PrefabName.Equals("StructureSDBSilo"))
-                {
-                    // Saddamo/Adam De Beers-inspired Silo. Build state 2 normally unwelded with crowbar instead of grinder.
-                    LogFoundStructure("silo", thing as Structure);
-                    SwapTools(thing as Structure, 2, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
-                }
-                else if (thing is StirlingEngine && thing.PrefabName.Equals("StructureStirlingEngine"))
-                {
-                    // Stirling Engine build state 1 normally unwelded with wrench instead of grinder.
-                    LogFoundStructure("stirling", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                }
-                else if (thing is LargeSatelliteDish && thing.PrefabName.Equals("StructureLargeSatelliteDish"))
-                {
-                    LogFoundStructure("satellite dish", thing as Structure);
-                    SwapTools(thing as Structure, 2, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with wrench (no parts)
-                    SwapTools(thing as Structure, 3, PrefabNames.AngleGrinder, PrefabNames.Drill);  // Assembled with screwdriver (no parts)
-                    SwapTools(thing as Structure, 4, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
-                }
-
-                // Heat Exchangers
-                else if (thing is PassthroughHeatExchanger && thing.PrefabName.StartsWith("StructurePassthroughHeatExchanger"))
-                {
-                    // Counterflow
-                    LogFoundStructure("heat exchanger", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder); // Assembled with welder
-                }
-                else if (thing is DirectHeatExchanger && thing.PrefabName.StartsWith("StructureLargeDirectHeatExchange"))
-                {
-                    // Large Direct
-                    LogFoundStructure("heat exchanger", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.Wrench);       // Assembled with pipes
-                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder); // Assembled with welder
-                }
-
-                // Tunnel boring machines
-                else if (thing is Quarry && thing.PrefabName.Equals("StructureAutoMinerSmall"))
-                {
-                    // Basic autominer normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
-                    LogFoundStructure("autominer", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
-                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
-                }
-                else if (thing is HorizontalQuarry && thing.PrefabName.Equals("StructureHorizontalAutoMiner"))
-                {
-                    // Ogre normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
-                    LogFoundStructure("autominer", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
-                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
-                }
-
-                // Landing pad components
-                else if ((thing is LandingPadModular) && thing.PrefabName.StartsWith("Landingpad_") && !thing.PrefabName.Equals("Landingpad_2x2CenterPiece01"))
-                {
-                    //Landing pad parts also use grinder to pick up initial placement (except new large tank) and wrench to unweld steel sheets.
-                    LogFoundStructure("pad", thing as Structure);
-                    if (thing.PrefabName.Equals("Landingpad_GasCylinderTankPiece"))
+                    else if (thing is DirectHeatExchanger && thing.PrefabName.StartsWith("StructureLargeDirectHeatExchange"))
                     {
-                        // Landingpad_GasCylinderTankPiece - Wrench (tank), Grinder (base) - Change BS 0 grinder to wrench, BS 1 wrench to drill
-                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                        // Large Direct
+                        LogFoundStructure("heat exchanger", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Drill, PrefabNames.Wrench);       // Assembled with pipes
+                        SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder); // Assembled with welder
+                    }
+
+                    // Tunnel boring machines
+                    else if (thing is Quarry && thing.PrefabName.Equals("StructureAutoMinerSmall"))
+                    {
+                        // Basic autominer normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
+                        LogFoundStructure("autominer", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
                         SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
                     }
-                    else if (thing.PrefabName.Equals("Landingpad_LargeTank"))
+                    else if (thing is HorizontalQuarry && thing.PrefabName.Equals("StructureHorizontalAutoMiner"))
                     {
-                        // Landingpad_LargeTank - Grinder (welded steel sheets, good), wrench (tanks), Hand Drill (base) - swap BS 0 and 1 (wrench, drill)
-                        SwapTools(thing as Structure, 0, PrefabNames.Drill, PrefabNames.Wrench);
+                        // Ogre normally unwelds two states with drill. Electronic parts are also welded in for some reason, and removed with wrench...? Sure, whatever.
+                        LogFoundStructure("autominer", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Drill, PrefabNames.AngleGrinder);
                         SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
                     }
-                    else
-                    {
-                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    }
-                }
-                else if (thing is LandingPadModularDevice && thing.PrefabName.StartsWith("Landingpad_"))
-                {
-                    //'Data & Power' and runway 'Threshhold' (yes, with an extra H) are a separate class
-                    LogFoundStructure("pad", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                }
-                else if (thing is LandingPadPump && thing.PrefabName.StartsWith("Landingpad_"))
-                {
-                    //So are the gas/liquid in/out pump parts
-                    LogFoundStructure("pad", thing as Structure);
-                    SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                }
 
-                // Rocket components and structure
-                else if (thing is RocketAvionicsDevice && thing.PrefabName.Equals("StructureRocketAvionics"))
-                {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
-                }
-                else if (thing is RocketCelestialTracker && thing.PrefabName.Equals("StructureRocketCelestialTracker"))
-                {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
-                }
-                else if (thing is RocketScanner && thing.PrefabName.Equals("StructureRocketScanner"))
-                {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
-                }
-                else if (thing is RocketChuteStorage && thing.PrefabName.Equals("StructureCargoStorageMedium"))
-                {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                }
-                else if (thing is RocketGasCollector && thing.PrefabName.Equals("StructureRocketGasCollector"))
-                {
-                    LogFoundStructure("rocket part", thing as Structure);
-                    SwapTools(thing as Structure, 1, PrefabNames.AngleGrinder, PrefabNames.Wrench);
-                }
-                else if (thing is EngineFuselage)
-                {
-                    if (thing.PrefabName.Equals("StructureEngineMountTypeA1"))
+                    // Landing pad components
+                    else if ((thing is LandingPadModular) && thing.PrefabName.StartsWith("Landingpad_") && !thing.PrefabName.Equals("Landingpad_2x2CenterPiece01"))
                     {
-                        LogFoundStructure("rocket part", thing as Structure);
-                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    }
-                }
-                else if (thing is NoseCone)
-                {
-                    if (thing.PrefabName.StartsWith("StructureFairingTypeA"))
-                    {
-                        LogFoundStructure("rocket part", thing as Structure);
-                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    }
-                }
-                else if (thing is Fuselage)
-                {
-                    if (thing.PrefabName.Equals("StructureFuselageTypeA1")
-                     || thing.PrefabName.Equals("StructureFuselageTypeA2")
-                     || thing.PrefabName.Equals("StructureFuselageTypeA4")
-                     || thing.PrefabName.Equals("StructureFuselageTypeC5"))
-                    {
-                        LogFoundStructure("rocket part", thing as Structure);
-                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
-                    }
-                }
-                else if (thing is RocketTower && thing.PrefabName.Equals("StructureRocketTower"))
-                {
-                    // Launch tower for umbilicals, normally grinder for state 0
-                    LogFoundStructure("launch tower", thing as Structure);
-                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
-                }
-
-                else if ((thing is Ladder || thing is LadderEnd) && thing.PrefabName.StartsWith("StructureLadder"))
-                {
-                    // Ladders, normally grinder for state 0
-                    LogFoundStructure("ladder", thing as Structure);
-                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
-                }
-                else if (thing is Cladding && thing.PrefabName.StartsWith("StructureCompositeCladding"))
-                {
-                    // Cladding, normally grinder for state 0
-                    LogFoundStructure("cladding", thing as Structure);
-                    SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
-                }
-
-                else if (thing.PrefabName.StartsWith("StructureIndustrial")
-                      || thing.PrefabName.StartsWith("StructureDispersalTower")
-                      || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
-                else if (thing is LandingPadDeprecated) { } // Deprecated, no handling needed
-
-                else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
-                {
-                    //Extra log outputs of build states that break Welder/Grinder Symmetry
-                    for (int i = 0; i < struc.BuildStates.Count; i++)
-                    {
-                        if (struc.BuildStates[i].Tool.ToolEntry?.PrefabName == PrefabNames.Welder
-                            && struc.BuildStates[i].Tool.ToolExit?.PrefabName != PrefabNames.AngleGrinder)
+                        //Landing pad parts also use grinder to pick up initial placement (except new large tank) and wrench to unweld steel sheets.
+                        LogFoundStructure("pad", thing as Structure);
+                        if (thing.PrefabName.Equals("Landingpad_GasCylinderTankPiece"))
                         {
-                            DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
+                            // Landingpad_GasCylinderTankPiece - Wrench (tank), Grinder (base) - Change BS 0 grinder to wrench, BS 1 wrench to drill
+                            SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                            SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
+                        }
+                        else if (thing.PrefabName.Equals("Landingpad_LargeTank"))
+                        {
+                            // Landingpad_LargeTank - Grinder (welded steel sheets, good), wrench (tanks), Hand Drill (base) - swap BS 0 and 1 (wrench, drill)
+                            SwapTools(thing as Structure, 0, PrefabNames.Drill, PrefabNames.Wrench);
+                            SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.Drill);
+                        }
+                        else
+                        {
+                            SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                         }
                     }
-                    if (struc.BuildStates[0].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder)
+                    else if (thing is LandingPadModularDevice && thing.PrefabName.StartsWith("Landingpad_"))
                     {
-                        DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state 0 grinds initial placement");
+                        //'Data & Power' and runway 'Threshhold' (yes, with an extra H) are a separate class
+                        LogFoundStructure("pad", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                     }
-                    if (struc.BuildStates.Count > 1)
+                    else if (thing is LandingPadPump && thing.PrefabName.StartsWith("Landingpad_"))
                     {
-                        for (int i = 1; i < struc.BuildStates.Count; i++)
+                        //So are the gas/liquid in/out pump parts
+                        LogFoundStructure("pad", thing as Structure);
+                        SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
+
+                    // Rocket components and structure
+                    else if (thing is RocketAvionicsDevice && thing.PrefabName.Equals("StructureRocketAvionics"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing is RocketCelestialTracker && thing.PrefabName.Equals("StructureRocketCelestialTracker"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapTools(thing as Structure, 2, PrefabNames.Drill, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing is RocketScanner && thing.PrefabName.Equals("StructureRocketScanner"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Crowbar, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing is RocketChuteStorage && thing.PrefabName.Equals("StructureCargoStorageMedium"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                    }
+                    else if (thing is RocketGasCollector && thing.PrefabName.Equals("StructureRocketGasCollector"))
+                    {
+                        LogFoundStructure("rocket part", thing as Structure);
+                        SwapTools(thing as Structure, 1, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                    }
+                    else if (thing is EngineFuselage)
+                    {
+                        if (thing.PrefabName.Equals("StructureEngineMountTypeA1"))
                         {
-                            if (struc.BuildStates[i].Tool.ToolExit?.PrefabName != null
-                                && struc.BuildStates[i].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder
-                                && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != null
-                                && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != PrefabNames.Welder)
+                            LogFoundStructure("rocket part", thing as Structure);
+                            SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        }
+                    }
+                    else if (thing is NoseCone)
+                    {
+                        if (thing.PrefabName.StartsWith("StructureFairingTypeA"))
+                        {
+                            LogFoundStructure("rocket part", thing as Structure);
+                            SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        }
+                    }
+                    else if (thing is Fuselage)
+                    {
+                        if (thing.PrefabName.Equals("StructureFuselageTypeA1")
+                         || thing.PrefabName.Equals("StructureFuselageTypeA2")
+                         || thing.PrefabName.Equals("StructureFuselageTypeA4")
+                         || thing.PrefabName.Equals("StructureFuselageTypeC5"))
+                        {
+                            LogFoundStructure("rocket part", thing as Structure);
+                            SwapAllTools(thing as Structure, PrefabNames.Wrench, PrefabNames.AngleGrinder);
+                        }
+                    }
+                    else if (thing is RocketTower && thing.PrefabName.Equals("StructureRocketTower"))
+                    {
+                        // Launch tower for umbilicals, normally grinder for state 0
+                        LogFoundStructure("launch tower", thing as Structure);
+                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                    }
+
+                    else if ((thing is Ladder || thing is LadderEnd) && thing.PrefabName.StartsWith("StructureLadder"))
+                    {
+                        // Ladders, normally grinder for state 0
+                        LogFoundStructure("ladder", thing as Structure);
+                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                    }
+                    else if (thing is Cladding && thing.PrefabName.StartsWith("StructureCompositeCladding"))
+                    {
+                        // Cladding, normally grinder for state 0
+                        LogFoundStructure("cladding", thing as Structure);
+                        SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
+                    }
+
+                    else if (thing.PrefabName.StartsWith("StructureIndustrial")
+                          || thing.PrefabName.StartsWith("StructureDispersalTower")
+                          || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
+                    else if (thing is LandingPadDeprecated) { } // Deprecated, no handling needed
+
+                    else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
+                    {
+                        //Extra log outputs of build states that break Welder/Grinder Symmetry
+                        for (int i = 0; i < struc.BuildStates.Count; i++)
+                        {
+                            if (struc.BuildStates[i].Tool.ToolEntry?.PrefabName == PrefabNames.Welder
+                                && struc.BuildStates[i].Tool.ToolExit?.PrefabName != PrefabNames.AngleGrinder)
                             {
-                                DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " grinds a " + struc.BuildStates[i].Tool.ToolEntry.PrefabName + " job");
+                                DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " unwelds with " + struc.BuildStates[i].Tool.ToolExit.PrefabName);
                             }
                         }
-                    }
+                        if (struc.BuildStates[0].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder)
+                        {
+                            DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state 0 grinds initial placement");
+                        }
+                        if (struc.BuildStates.Count > 1)
+                        {
+                            for (int i = 1; i < struc.BuildStates.Count; i++)
+                            {
+                                if (struc.BuildStates[i].Tool.ToolExit?.PrefabName != null
+                                    && struc.BuildStates[i].Tool.ToolExit?.PrefabName == PrefabNames.AngleGrinder
+                                    && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != null
+                                    && struc.BuildStates[i].Tool.ToolEntry?.PrefabName != PrefabNames.Welder)
+                                {
+                                    DeconSwapPlugin.logger.LogInfo("[Debug] Prefab " + struc.PrefabName + " (Class " + struc.GetType().Name + ") build state " + i + " grinds a " + struc.BuildStates[i].Tool.ToolEntry.PrefabName + " job");
+                                }
+                            }
+                        }
 
+                    }
+                }
+                catch (Exception e)
+                {
+                    DeconSwapPlugin.logger.LogError("Exception in prefab scan position " + iter);
+                    DeconSwapPlugin.logger.LogError(e.ToString());
                 }
             }
 
+            DeconSwapPlugin.logger.LogInfo("Finished scanning " + iter + " prefabs.");
             if (changeCount == expectedChanges)
                 DeconSwapPlugin.logger.LogInfo("Modified " + changeCount + " build states (this is the expected result).");
             else if (changeCount > 0)
