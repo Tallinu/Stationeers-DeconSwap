@@ -13,7 +13,7 @@ namespace DeconSwap
         public static DeconSwapPlugin Instance;
         public const string PluginGuid = "stationeers.DeconSwap";
         public const string PluginName = "Frame & Wall DeconSwap";
-        public const string PluginVersion = "1.2.3";
+        public const string PluginVersion = "1.3.0";
         public static Mod mod = new Mod(PluginGuid, PluginVersion);
 
         public static BepInEx.Logging.ManualLogSource logger = new BepInEx.Logging.ManualLogSource("F&W DeconSwap");

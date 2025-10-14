@@ -81,18 +81,19 @@ namespace DeconSwap
                     else if (thing is Airlock || thing is Door || thing is RoboticArmDoor)
                     {
                         // Hangar aka 'Hanger' doors; the small isn't welded, it only has one build state.
-                        if (thing.PrefabName.Equals("StructureAirlockGate")) { } // Small hangar
+                        if (thing.PrefabName.Equals("StructureAirlockGate")) { } // Small hangar doesn't get welded
                         else if (thing.PrefabName.Equals("StructureLargeHangerDoor")
-                         || thing.PrefabName.Equals("StructureMediumHangerDoor"))
+                              || thing.PrefabName.Equals("StructureMediumHangerDoor"))
                         {
+                            // Medium and Large are normally unwelded by wrench
                             LogFoundStructure("hangar", thing as Structure);
                             SwapTools(thing as Structure, 1, PrefabNames.Wrench, PrefabNames.AngleGrinder);
                         }
                         else if (thing.PrefabName.Equals("StructureBlastDoor")
-                         || thing.PrefabName.StartsWith("StructureAirlock") // Airlock and AirlockWide
-                         || thing.PrefabName.Equals("StructureGlassDoor")
-                         || thing.PrefabName.Equals("StructureCompositeDoor")
-                         || thing.PrefabName.Equals("StructureRobotArmDoor"))
+                              || thing.PrefabName.StartsWith("StructureAirlock") // Airlock and AirlockWide
+                              || thing.PrefabName.Equals("StructureGlassDoor")
+                              || thing.PrefabName.Equals("StructureCompositeDoor")
+                              || thing.PrefabName.Equals("StructureRobotArmDoor"))
                         {
                             // All of these use drill for unwelding state 1 and grinder for sheets that were crowbarred in.
                             // Swapping the drill and grinder makes just about 75% more sense while also avoiding increased risk of accidental door disassembly!
@@ -275,7 +276,6 @@ namespace DeconSwap
                           || thing.PrefabName.StartsWith("StructureDispersalTower")
                           || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
                     else if (thing is LandingPadDeprecated) { } // Deprecated, no handling needed
-
                     else if (DeconSwapPlugin.extraLogOutputs.Value && thing is Structure struc)
                     {
                         //Extra log outputs of build states that break Welder/Grinder Symmetry
@@ -304,7 +304,6 @@ namespace DeconSwap
                                 }
                             }
                         }
-
                     }
                 }
                 catch (Exception e)
