@@ -271,7 +271,7 @@ namespace DeconSwap
                         LogFoundStructure("cladding", thing as Structure);
                         SwapTools(thing as Structure, 0, PrefabNames.AngleGrinder, PrefabNames.Wrench);
                     }
-
+                    /*
                     else if (thing.PrefabName.StartsWith("StructureIndustrial")
                           || thing.PrefabName.StartsWith("StructureDispersalTower")
                           || thing.PrefabName.StartsWith("StructureCarbonSequester")) { } // Not in game, no handling needed
@@ -305,6 +305,7 @@ namespace DeconSwap
                             }
                         }
                     }
+                    */
                 }
                 catch (Exception e)
                 {

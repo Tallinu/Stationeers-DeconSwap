@@ -19,7 +19,7 @@ namespace DeconSwap
         public static BepInEx.Logging.ManualLogSource logger = new BepInEx.Logging.ManualLogSource("F&W DeconSwap");
 
         public static ConfigEntry<int> grindTimeMultiplier;
-        public static ConfigEntry<bool> extraLogOutputs;
+        //public static ConfigEntry<bool> extraLogOutputs;
 
         void Awake()
         {
@@ -41,7 +41,7 @@ namespace DeconSwap
                 logger.LogError(e.ToString());
             }
 
-            grindTimeMultiplier = this.Config.Bind(new ConfigDefinition("TimeScale", "FrameGrindMultiplier"), 150, new ConfigDescription(
+            grindTimeMultiplier = this.Config.Bind(new ConfigDefinition("Time Scale", "Frame Grind Multiplier"), 150, new ConfigDescription(
                 "Percentage scalar to the time required to open an airtight, fully welded frame, to help avoid accidental decompression.\n"
                 + "This affects only the final airtight build state, not the two incomplete states.\n"
                 + "\n100% disables this feature, leaving the time unchanged at 0.5 second.\n"
@@ -49,11 +49,11 @@ namespace DeconSwap
                 + "\nHold Control & Left Click the slider to type a value.\n"
                 + "\nChanges apply AFTER RESTART of Stationeers.", new AcceptableValueRange<int>(100, 400))
             );
-            extraLogOutputs = this.Config.Bind(new ConfigDefinition("Developer Tools", "ExtraLogOutputs"), false, new ConfigDescription(
-                "This causes the log to show additional information regarding which structures that are not currently handled have build states "
-                + "with a mismatch between welder and grinder usage.\n\n"
-                + "This option is useful only for development purposes, and will do nothing but waste a user's time. If it was possible, it would be hidden. :)"
-                ));
+            //extraLogOutputs = this.Config.Bind(new ConfigDefinition("Developer Tools", "Extra Log Outputs"), false, new ConfigDescription(
+            //    "This causes the log to show additional information regarding which structures that are not currently handled have build states "
+            //    + "with a mismatch between welder and grinder usage.\n\n"
+            //    + "This option is useful only for development purposes, and will do nothing but waste a user's time. If it was possible, it would be hidden. :)"
+            //    ));
         }
     }
 }
