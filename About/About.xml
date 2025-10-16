@@ -83,7 +83,7 @@ DeconSwap now handles all of these cases. So if you remember that something was 
 [/list]
 </Description>
 <InGameDescription><![CDATA[<size=30><color=#02d1fa><b>DeconSwap</b></color></size>
-Reduce the risk of hull breaches and improve tool usage consistency, primarily by swapping the use of the wrench and grinder for deconstructing frames, walls, and other structures with similar tasks. The time to grind open an airtight frame is also slightly increased (this can be adjusted/disabled).
+Reduce the risk of hull breaches and improve tool usage consistency, primarily by swapping the use of the wrench and grinder for deconstructing frames, walls, and other structures with similar tool usage. The time to grind open an airtight frame is also slightly increased (this can be adjusted/disabled).
 Requires <color=#22ff33><b>BepInEx</b></color> and <color=#22ff33><b>StationeersLaunchPad</b></color> to work.
 <i>The changes made by this mod are not retained in your save games, so you can freely try it and remove it.</i>
 <i>For multiplayer, <color=#22ff33>everyone</color> must have the mod installed (including the host/server).</i>
