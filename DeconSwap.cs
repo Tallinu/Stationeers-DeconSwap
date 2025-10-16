@@ -11,11 +11,11 @@ namespace DeconSwap
     {
         public static DeconSwapPlugin Instance;
         public const string PluginGuid = "stationeers.DeconSwap";
-        public const string PluginName = "Frame & Wall DeconSwap";
-        public const string PluginVersion = "1.3.0";
+        public const string PluginName = "DeconSwap";
+        public const string PluginVersion = "1.3.1";
         public static Mod mod = new Mod(PluginGuid, PluginVersion);
 
-        public static BepInEx.Logging.ManualLogSource logger = new BepInEx.Logging.ManualLogSource("F&W DeconSwap");
+        public static BepInEx.Logging.ManualLogSource logger = new BepInEx.Logging.ManualLogSource("DeconSwap");
 
         public static ConfigEntry<int> grindTimeMultiplier;
         //public static ConfigEntry<bool> extraLogOutputs;
@@ -36,7 +36,7 @@ namespace DeconSwap
             }
             catch (Exception e)
             {
-                logger.LogError("Patch Failed");
+                logger.LogError("Patch Failed!");
                 logger.LogError(e.ToString());
             }
 

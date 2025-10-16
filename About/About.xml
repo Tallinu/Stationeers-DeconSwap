@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Name>Frame &amp; Wall DeconSwap</Name>
+  <Name>DeconSwap</Name>
   <Author>Tallinu</Author>
-  <Version>1.3.0</Version>
+  <Version>1.3.1</Version>
   <Description>
 Reduce the chance of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing certain build states of frames, walls, and other structures with similar tool usage. The time to grind open an airtight frame is also slightly increased, from 0.5 to 0.75 second (this can be adjusted/disabled).
 
@@ -71,8 +71,8 @@ DeconSwap now handles all of these cases. So if you remember that something was 
 [*]Autominer (Drill unwelding => Grinder)
 [*]Most trader Landing Pad components (Wrench unwelding, grinder pickup: swapped)
 [/list]The Landing Pad storage tanks are slightly different. Non-inline tanks are normally disassembled by drill, and the other landing pad atmospherics parts already use the drill to remove components, so:[list]
-[*]  Large tank (Wrench for tank removal, drill for pickup: swapped)
-[*]  Small tank (Wrench for tank removal => Drill, grinder for pickup => Wrench)
+[*]  Landing Pad Large Tank (Wrench for tank removal, drill for pickup: swapped)
+[*]  Landing Pad Small Tank (Wrench for tank removal => Drill, grinder for pickup => Wrench)
 [/list]And finally, several welded rocket components:[list]
 [*]  Fuselage/fairing parts (Wrench unwelding, grinder pickup: swapped)
 [*]  Launch Tower (Grinder pickup => Wrench)
@@ -82,14 +82,14 @@ DeconSwap now handles all of these cases. So if you remember that something was 
 [*]  Medium cargo (Wrench unwelding => Grinder)
 [/list]
 </Description>
-<InGameDescription><![CDATA[<size=30><color=#02d1fa><b>Frame & Wall DeconSwap</b></color></size>
-Reduce the risk of hull breaches and improve tool usage consistency by swapping the use of the wrench and grinder for deconstructing frames, walls, and landing pads. The time to grind open an airtight frame is also slightly increased (this can be adjusted/disabled).
+<InGameDescription><![CDATA[<size=30><color=#02d1fa><b>DeconSwap</b></color></size>
+Reduce the risk of hull breaches and improve tool usage consistency, primarily by swapping the use of the wrench and grinder for deconstructing frames, walls, and other structures with similar tasks. The time to grind open an airtight frame is also slightly increased (this can be adjusted/disabled).
 Requires <color=#22ff33><b>BepInEx</b></color> and <color=#22ff33><b>StationeersLaunchPad</b></color> to work.
 <i>The changes made by this mod are not retained in your save games, so you can freely try it and remove it.</i>
 <i>For multiplayer, <color=#22ff33>everyone</color> must have the mod installed (including the host/server).</i>
 <size=25><color=#02d1fa><b>Why bother? Why these tools?</b></color></size>
-"Unwelding" a sealed frame with a <i>wrench</i> (how??) is way too easy to do <color=#ffff00>accidentally</color> while working on your <color=#ffff00>plumbing</color>, risking <color=#ff2020>dangerous hull breaches!</color> Meanwhile, you place frames, walls, and landing pads with your <i>bare hands</i>, but need a charged <i>grinder</i> to pick them up again, even though most other tasks reversed by a grinder are <i>welding</i> operations.
-This mod edits specific build states of frames, walls, and landing pads, swapping the use of wrench and grinder so frame and pad <i>welding</i> steps are undone with the <i>grinder</i>, and tool-free <i>placement</i> steps are picked up easily with the <i>wrench</i>.
+"Unwelding" a sealed frame with a <i>wrench</i> (how??) is way too easy to do <color=#ffff00>accidentally</color> while working on your <color=#ffff00>plumbing</color>, risking <color=#ff2020>dangerous hull breaches!</color> Meanwhile, you place frames, walls, and landing pads with your <i>bare hands</i>, but need a charged <i>grinder</i> to pick them up again, even though most tasks reversed by a grinder are <i>welding</i> operations.
+This mod edits specific build states of frames, walls, landing pads, rocket fuselages, and a number of other structures, primarily swapping the use of wrench and grinder so <i>welding</i> steps are undone with the <i>grinder</i>, and tool-free <i>placement</i> steps are picked up easily with the <i>wrench</i>.
 The time required to grind open the final, airtight stage of a frame can be configured on the panel to the right. <color=#ff2020>Set to 100% to disable this feature.</color> The default of 150% makes the normally 0.5 second operation take 0.75 second, which feels like just enough extra time to let you realize what's happening and stop before it's too late, without significantly hindering deliberate deconstruction.
 ]]></InGameDescription>
   <ChangeLog xsi:nil="true" />
